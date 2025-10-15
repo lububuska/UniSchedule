@@ -19,12 +19,17 @@ val Typography = Typography(
     labelLarge = TextStyle(
         fontFamily = MontserratAlternates,
         fontWeight = FontWeight.Normal,
-        fontSize = 34.sp
+        fontSize = 32.sp
     ),
     labelMedium = TextStyle(
         fontFamily = MontserratAlternates,
         fontWeight = FontWeight.Normal,
-        fontSize = 32.sp
+        fontSize = 24.sp
     ),
+    labelSmall = TextStyle(
+        fontFamily = MontserratAlternates,
+        fontWeight = FontWeight.Normal,
+        fontSize = 20.sp
+    )
 
 )
