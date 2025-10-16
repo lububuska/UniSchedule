@@ -11,6 +11,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.unischedule.ui.theme.Typography
 import android.content.Context
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import com.example.unischedule.R
+import com.example.unischedule.ui.theme.Black
+import com.example.unischedule.ui.theme.Grey
+import com.example.unischedule.ui.theme.White
 
 @Composable
 fun LoginScreen(
@@ -57,22 +61,22 @@ fun LoginScreen(
                 value = username,
                 onValueChange = { username = it },
                 textStyle = MaterialTheme.typography.labelMedium.copy(
-                    color = Color.Black
+                    color = Black
                 ),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    focusedContainerColor = White,
+                    unfocusedContainerColor = White,
+                    focusedBorderColor = White,
+                    unfocusedBorderColor = White,
+                    focusedTextColor = Black,
+                    unfocusedTextColor = Black
                 ),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
                     Text(
                         text = "Логин",
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color.Black
+                        color = Grey
                     )
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -84,24 +88,25 @@ fun LoginScreen(
                 value = password,
                 onValueChange = { password = it },
                 textStyle = MaterialTheme.typography.labelMedium.copy(
-                    color = Color.Black
+                    color = Black
                 ),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedBorderColor = Color.White,
-                    unfocusedBorderColor = Color.White,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
+                    focusedContainerColor = White,
+                    unfocusedContainerColor = White,
+                    focusedBorderColor = White,
+                    unfocusedBorderColor = White,
+                    focusedTextColor = Black,
+                    unfocusedTextColor = Black
                 ),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
                     Text(
                         text = "Пароль",
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color.Black
+                        color = Grey
                     )
                 },
+                visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -113,7 +118,7 @@ fun LoginScreen(
                 Text(
                     text = "Создать аккаунт",
                     style = MaterialTheme.typography.labelMedium,
-                    color = Color.Black
+                    color = Black
                 )
             }
         }
@@ -124,6 +129,8 @@ fun LoginScreen(
                 val savedUser = prefs.getString("username", null)
                 val savedPass = prefs.getString("password", null)
 
+                Log.d("SharedPrefs", "username: $username, password: $password")
+
                 if (username == savedUser && password == savedPass) {
                     Toast.makeText(context, "Вход выполнен", Toast.LENGTH_SHORT).show()
                     onLoginSuccess()
@@ -133,8 +140,8 @@ fun LoginScreen(
             },
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.White,
-                contentColor = Color.Black
+                containerColor = White,
+                contentColor = Black
             ),
             modifier = Modifier
                 .align(Alignment.BottomCenter)

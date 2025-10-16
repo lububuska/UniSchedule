@@ -10,83 +10,191 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import android.content.Context
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.example.unischedule.R
+import com.example.unischedule.ui.theme.Black
+import com.example.unischedule.ui.theme.Grey
+import com.example.unischedule.ui.theme.Typography
+import com.example.unischedule.ui.theme.White
 
 @Composable
-fun RegisterScreen(onRegisterSuccess: () -> Unit) {
+fun RegisterScreen(
+    onRegisterSuccess: () -> Unit,
+    onBack: () -> Unit
+) {
+    BackHandler {
+        onBack()
+    }
+
     val context = LocalContext.current
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Регистрация", style = MaterialTheme.typography.displayMedium)
-
-        Spacer(Modifier.height(32.dp))
-
-        OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text("Логин") },
-            modifier = Modifier.fillMaxWidth()
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(R.drawable.login_and_registration_background),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
         )
 
-        Spacer(Modifier.height(16.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Регистрация",  style = Typography.displayMedium)
 
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Пароль") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
+            Spacer(Modifier.height(32.dp))
 
-        Spacer(Modifier.height(16.dp))
+            OutlinedTextField(
+                value = username,
+                onValueChange = { username = it },
+                textStyle = MaterialTheme.typography.labelMedium.copy(
+                    color = Black
+                ),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = White,
+                    unfocusedContainerColor = White,
+                    focusedBorderColor = White,
+                    unfocusedBorderColor = White,
+                    focusedTextColor = Black,
+                    unfocusedTextColor = Black
+                ),
+                shape = RoundedCornerShape(15.dp),
+                placeholder = {
+                    Text(
+                        text = "Логин",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Grey
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
 
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text("Повторите пароль") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
+            Spacer(Modifier.height(16.dp))
 
-        if (errorMessage.isNotEmpty()) {
-            Text(errorMessage, color = MaterialTheme.colorScheme.error)
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                textStyle = MaterialTheme.typography.labelMedium.copy(
+                    color = Black
+                ),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = White,
+                    unfocusedContainerColor = White,
+                    focusedBorderColor = White,
+                    unfocusedBorderColor = White,
+                    focusedTextColor = Black,
+                    unfocusedTextColor = Black
+                ),
+                shape = RoundedCornerShape(15.dp),
+                placeholder = {
+                    Text(
+                        text = "Пароль",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Grey
+                    )
+                },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                textStyle = MaterialTheme.typography.labelMedium.copy(
+                    color = Black
+                ),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = White,
+                    unfocusedContainerColor = White,
+                    focusedBorderColor = White,
+                    unfocusedBorderColor = White,
+                    focusedTextColor = Black,
+                    unfocusedTextColor = Black
+                ),
+                shape = RoundedCornerShape(15.dp),
+                placeholder = {
+                    Text(
+                        text = "Повторите пароль",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Grey
+                    )
+                },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            if (errorMessage.isNotEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
         }
-
-        Spacer(Modifier.height(24.dp))
-
         Button(
             onClick = {
                 when {
                     username.isBlank() || password.isBlank() || confirmPassword.isBlank() ->
                         errorMessage = "Все поля должны быть заполнены"
 
+                    password.length < 8 ->
+                        errorMessage = "Пароль должен содержать минимум 8 символов"
+
+                    !password.any { it.isDigit() } ->
+                        errorMessage = "Пароль должен содержать хотя бы одну цифру"
+
+                    !password.any { it.isUpperCase() } ->
+                        errorMessage = "Пароль должен содержать хотя бы одну заглавную букву"
+
+                    !password.any { it.isLowerCase() } ->
+                        errorMessage = "Пароль должен содержать хотя бы одну строчную букву"
+
                     password != confirmPassword ->
                         errorMessage = "Пароли не совпадают"
 
                     else -> {
-                        val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                        val prefs =
+                            context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                         prefs.edit()
                             .putString("username", username)
                             .putString("password", password)
                             .apply()
 
-                        Toast.makeText(context, "Регистрация успешна", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Регистрация успешна", Toast.LENGTH_SHORT)
+                            .show()
                         onRegisterSuccess()
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            shape = RoundedCornerShape(15.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = White,
+                contentColor = Black
+            ),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(start = 25.dp, bottom = 85.dp, end = 25.dp)
+                .fillMaxWidth()
+                .height(55.dp)
         ) {
-            Text("Создать аккаунт")
+            Text(
+                text = "Создать аккаунт",
+                style = MaterialTheme.typography.labelMedium
+            )
         }
     }
 }

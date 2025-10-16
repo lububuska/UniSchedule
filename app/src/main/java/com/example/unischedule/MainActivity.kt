@@ -30,7 +30,10 @@ class MainActivity : ComponentActivity() {
                     )
 
                     "register" -> RegisterScreen(
-                        onRegisterSuccess = { currentScreen = "login" }
+                        onRegisterSuccess = {
+                            // TODO: позже добавим переход к расписанию
+                        },
+                        onBack = { currentScreen = "login" }
                     )
                 }
             }
