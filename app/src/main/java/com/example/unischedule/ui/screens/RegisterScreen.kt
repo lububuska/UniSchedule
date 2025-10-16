@@ -21,6 +21,8 @@ import com.example.unischedule.ui.theme.Black
 import com.example.unischedule.ui.theme.Grey
 import com.example.unischedule.ui.theme.Typography
 import com.example.unischedule.ui.theme.White
+import com.example.unischedule.data.UserDatabaseHelper
+
 
 @Composable
 fun RegisterScreen(
@@ -36,6 +38,8 @@ fun RegisterScreen(
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
+
+    val dbHelper = UserDatabaseHelper(context)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -167,16 +171,13 @@ fun RegisterScreen(
                         errorMessage = "Пароли не совпадают"
 
                     else -> {
-                        val prefs =
-                            context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                        prefs.edit()
-                            .putString("username", username)
-                            .putString("password", password)
-                            .apply()
-
-                        Toast.makeText(context, "Регистрация успешна", Toast.LENGTH_SHORT)
-                            .show()
-                        onRegisterSuccess()
+                        val success = dbHelper.addUser(username, password)
+                        if (success) {
+                            Toast.makeText(context, "Регистрация успешна", Toast.LENGTH_SHORT).show()
+                            onRegisterSuccess()
+                        } else {
+                            errorMessage = "Пользователь с таким логином уже существует"
+                        }
                     }
                 }
             },

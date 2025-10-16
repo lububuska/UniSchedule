@@ -22,6 +22,8 @@ import com.example.unischedule.R
 import com.example.unischedule.ui.theme.Black
 import com.example.unischedule.ui.theme.Grey
 import com.example.unischedule.ui.theme.White
+import com.example.unischedule.data.UserDatabaseHelper
+
 
 @Composable
 fun LoginScreen(
@@ -37,6 +39,8 @@ fun LoginScreen(
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
+
+    val dbHelper = UserDatabaseHelper(context)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -125,18 +129,14 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                val savedUser = prefs.getString("username", null)
-                val savedPass = prefs.getString("password", null)
-
-                Log.d("SharedPrefs", "username: $username, password: $password")
-
-                if (username == savedUser && password == savedPass) {
+                val user = dbHelper.getUser(username)
+                if (user != null && user.second == password) {
                     Toast.makeText(context, "Вход выполнен", Toast.LENGTH_SHORT).show()
                     onLoginSuccess()
                 } else {
                     errorMessage = "Неверный логин или пароль"
                 }
+
             },
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(
