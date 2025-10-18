@@ -12,8 +12,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.unischedule.R
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 
 @Composable
 
@@ -38,7 +38,7 @@ fun EnterScreen(onLoginClick: () -> Unit) {
             Text(
                 text = "UniSchedule",
                 style = MaterialTheme.typography.displayMedium,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier.padding(bottom = 32.dp)
             )
 
@@ -49,15 +49,15 @@ fun EnterScreen(onLoginClick: () -> Unit) {
                 onClick = onLoginClick,
                 shape = RoundedCornerShape(15.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
+                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
             ) {
                 Text(
-                    text = "Войти",
+                    text = stringResource(id = R.string.login),
                     style = MaterialTheme.typography.labelLarge
                 )
             }

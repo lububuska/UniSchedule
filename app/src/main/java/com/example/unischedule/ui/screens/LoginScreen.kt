@@ -10,18 +10,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.unischedule.ui.theme.Typography
-import android.content.Context
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.example.unischedule.R
-import com.example.unischedule.ui.theme.Black
 import com.example.unischedule.ui.theme.Grey
-import com.example.unischedule.ui.theme.White
 import com.example.unischedule.data.UserDatabaseHelper
 
 
@@ -57,7 +53,10 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Авторизация", style = Typography.displayMedium)
+            Text(
+                text = stringResource(id = R.string.authorization),
+                style = Typography.displayMedium
+            )
 
             Spacer(Modifier.height(32.dp))
 
@@ -65,20 +64,20 @@ fun LoginScreen(
                 value = username,
                 onValueChange = { username = it },
                 textStyle = MaterialTheme.typography.labelMedium.copy(
-                    color = Black
+                    color = MaterialTheme.colorScheme.onSecondary
                 ),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = White,
-                    unfocusedContainerColor = White,
-                    focusedBorderColor = White,
-                    unfocusedBorderColor = White,
-                    focusedTextColor = Black,
-                    unfocusedTextColor = Black
+                    focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedTextColor = MaterialTheme.colorScheme.onSecondary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSecondary
                 ),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
                     Text(
-                        text = "Логин",
+                        text = stringResource(id = R.string.login_input),
                         style = MaterialTheme.typography.labelMedium,
                         color = Grey
                     )
@@ -92,20 +91,20 @@ fun LoginScreen(
                 value = password,
                 onValueChange = { password = it },
                 textStyle = MaterialTheme.typography.labelMedium.copy(
-                    color = Black
+                    color = MaterialTheme.colorScheme.onSecondary
                 ),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = White,
-                    unfocusedContainerColor = White,
-                    focusedBorderColor = White,
-                    unfocusedBorderColor = White,
-                    focusedTextColor = Black,
-                    unfocusedTextColor = Black
+                    focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedTextColor = MaterialTheme.colorScheme.onSecondary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSecondary
                 ),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
                     Text(
-                        text = "Пароль",
+                        text = stringResource(id = R.string.password),
                         style = MaterialTheme.typography.labelMedium,
                         color = Grey
                     )
@@ -120,9 +119,9 @@ fun LoginScreen(
 
             TextButton(onClick = onNavigateToRegister) {
                 Text(
-                    text = "Создать аккаунт",
+                    text = stringResource(id = R.string.to_create),
                     style = MaterialTheme.typography.labelMedium,
-                    color = Black
+                    color = MaterialTheme.colorScheme.onSecondary
                 )
             }
         }
@@ -131,17 +130,18 @@ fun LoginScreen(
             onClick = {
                 val user = dbHelper.getUser(username)
                 if (user != null && user.second == password) {
-                    Toast.makeText(context, "Вход выполнен", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.login_success), Toast.LENGTH_SHORT).show()
                     onLoginSuccess()
                 } else {
-                    errorMessage = "Неверный логин или пароль"
+                    errorMessage = context.getString(R.string.login_error)
                 }
+
 
             },
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = White,
-                contentColor = Black
+                containerColor = MaterialTheme.colorScheme.onPrimary,
+                contentColor = MaterialTheme.colorScheme.onSecondary
             ),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -150,7 +150,7 @@ fun LoginScreen(
                 .height(55.dp)
         ) {
             Text(
-                text = "Войти",
+                text = stringResource(id = R.string.login),
                 style = MaterialTheme.typography.labelLarge
             )
         }

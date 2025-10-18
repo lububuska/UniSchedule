@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UniSchedule</string>
+    <string name="login">Log in</string>
+    <string name="authorization">Authorization</string>
+    <string name="to_create">Register</string>
+    <string name="registration">Registration</string>
+    <string name="login_input">Login</string>
+    <string name="password">Password</string>
+    <string name="login_success">Login completed</string>
+    <string name="login_error">Incorrect login or password</string>
+    <string name="password2">Repeat password</string>
+    <string name="error_empty_fields">All fields must be filled in</string>
+    <string name="error_password_length">Password must contain at least 8 characters</string>
+    <string name="error_password_digit">Password must contain at least 1 number</string>
+    <string name="error_password_upper">Password must contain at least 1 uppercase letter</string>
+    <string name="error_password_lower">Password must contain at least 1 lowercase letter</string>
+    <string name="error_password_mismatch">Passwords don\'t match</string>
+    <string name="registration_success">Registartion successful</string>
+    <string name="error_user_exists">A user with this login already exists</string>
+</resources>

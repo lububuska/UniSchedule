@@ -9,18 +9,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.example.unischedule.R
-import com.example.unischedule.ui.theme.Black
 import com.example.unischedule.ui.theme.Grey
 import com.example.unischedule.ui.theme.Typography
-import com.example.unischedule.ui.theme.White
 import com.example.unischedule.data.UserDatabaseHelper
 
 
@@ -56,7 +53,10 @@ fun RegisterScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Регистрация",  style = Typography.displayMedium)
+            Text(
+                text = stringResource(id = R.string.registration),
+                style = Typography.displayMedium
+            )
 
             Spacer(Modifier.height(32.dp))
 
@@ -64,20 +64,20 @@ fun RegisterScreen(
                 value = username,
                 onValueChange = { username = it },
                 textStyle = MaterialTheme.typography.labelMedium.copy(
-                    color = Black
+                    color = MaterialTheme.colorScheme.onSecondary
                 ),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = White,
-                    unfocusedContainerColor = White,
-                    focusedBorderColor = White,
-                    unfocusedBorderColor = White,
-                    focusedTextColor = Black,
-                    unfocusedTextColor = Black
+                    focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedTextColor = MaterialTheme.colorScheme.onSecondary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSecondary
                 ),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
                     Text(
-                        text = "Логин",
+                        text = stringResource(id = R.string.login_input),
                         style = MaterialTheme.typography.labelMedium,
                         color = Grey
                     )
@@ -91,20 +91,20 @@ fun RegisterScreen(
                 value = password,
                 onValueChange = { password = it },
                 textStyle = MaterialTheme.typography.labelMedium.copy(
-                    color = Black
+                    color = MaterialTheme.colorScheme.onSecondary
                 ),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = White,
-                    unfocusedContainerColor = White,
-                    focusedBorderColor = White,
-                    unfocusedBorderColor = White,
-                    focusedTextColor = Black,
-                    unfocusedTextColor = Black
+                    focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedTextColor = MaterialTheme.colorScheme.onSecondary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSecondary
                 ),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
                     Text(
-                        text = "Пароль",
+                        text = stringResource(id = R.string.password),
                         style = MaterialTheme.typography.labelMedium,
                         color = Grey
                     )
@@ -119,20 +119,20 @@ fun RegisterScreen(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
                 textStyle = MaterialTheme.typography.labelMedium.copy(
-                    color = Black
+                    color = MaterialTheme.colorScheme.onSecondary
                 ),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = White,
-                    unfocusedContainerColor = White,
-                    focusedBorderColor = White,
-                    unfocusedBorderColor = White,
-                    focusedTextColor = Black,
-                    unfocusedTextColor = Black
+                    focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary,
+                    focusedTextColor = MaterialTheme.colorScheme.onSecondary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSecondary
                 ),
                 shape = RoundedCornerShape(15.dp),
                 placeholder = {
                     Text(
-                        text = "Повторите пароль",
+                        text = stringResource(id = R.string.password2),
                         style = MaterialTheme.typography.labelMedium,
                         color = Grey
                     )
@@ -153,38 +153,38 @@ fun RegisterScreen(
             onClick = {
                 when {
                     username.isBlank() || password.isBlank() || confirmPassword.isBlank() ->
-                        errorMessage = "Все поля должны быть заполнены"
+                        errorMessage = context.getString(R.string.error_empty_fields)
 
                     password.length < 8 ->
-                        errorMessage = "Пароль должен содержать минимум 8 символов"
+                        errorMessage = context.getString(R.string.error_password_length)
 
                     !password.any { it.isDigit() } ->
-                        errorMessage = "Пароль должен содержать хотя бы одну цифру"
+                        errorMessage = context.getString(R.string.error_password_digit)
 
                     !password.any { it.isUpperCase() } ->
-                        errorMessage = "Пароль должен содержать хотя бы одну заглавную букву"
+                        errorMessage = context.getString(R.string.error_password_upper)
 
                     !password.any { it.isLowerCase() } ->
-                        errorMessage = "Пароль должен содержать хотя бы одну строчную букву"
+                        errorMessage = context.getString(R.string.error_password_lower)
 
                     password != confirmPassword ->
-                        errorMessage = "Пароли не совпадают"
+                        errorMessage = context.getString(R.string.error_password_mismatch)
 
                     else -> {
                         val success = dbHelper.addUser(username, password)
                         if (success) {
-                            Toast.makeText(context, "Регистрация успешна", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, context.getString(R.string.registration_success), Toast.LENGTH_SHORT).show()
                             onRegisterSuccess()
                         } else {
-                            errorMessage = "Пользователь с таким логином уже существует"
+                            errorMessage = context.getString(R.string.error_user_exists)
                         }
                     }
                 }
             },
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = White,
-                contentColor = Black
+                containerColor = MaterialTheme.colorScheme.onPrimary,
+                contentColor = MaterialTheme.colorScheme.onSecondary
             ),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -193,7 +193,7 @@ fun RegisterScreen(
                 .height(55.dp)
         ) {
             Text(
-                text = "Создать аккаунт",
+                text = stringResource(id = R.string.to_create),
                 style = MaterialTheme.typography.labelMedium
             )
         }

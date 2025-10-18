@@ -3,10 +3,17 @@ package com.example.unischedule
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
-import com.example.unischedule.ui.screens.EnterScreen
-import com.example.unischedule.ui.screens.LoginScreen
-import com.example.unischedule.ui.screens.RegisterScreen
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
+import androidx.navigation.compose.*
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.unischedule.ui.components.BottomBar
+import com.example.unischedule.ui.screens.*
 import com.example.unischedule.ui.theme.UniScheduleTheme
 
 class MainActivity : ComponentActivity() {
@@ -14,28 +21,33 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             UniScheduleTheme {
-                var currentScreen by remember { mutableStateOf("enter") }
+                MainNavigation()
+            }
+        }
+    }
+}
 
-                when (currentScreen) {
-                    "enter" -> EnterScreen(
-                        onLoginClick = { currentScreen = "login" }
-                    )
+@Composable
+fun MainNavigation() {
+    val navController = rememberNavController()
 
-                    "login" -> LoginScreen(
-                        onLoginSuccess = {
-                            // TODO: позже добавим переход к расписанию
-                        },
-                        onNavigateToRegister = { currentScreen = "register" },
-                        onBack = { currentScreen = "enter" }
-                    )
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.primary,
+        bottomBar = { BottomBar(navController) }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = "calendar",
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable("calendar") { CalendarScreen(navController) }
 
-                    "register" -> RegisterScreen(
-                        onRegisterSuccess = {
-                            // TODO: позже добавим переход к расписанию
-                        },
-                        onBack = { currentScreen = "login" }
-                    )
-                }
+            composable(
+                route = "month/{monthName}",
+                arguments = listOf(navArgument("monthName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val monthName = backStackEntry.arguments?.getString("monthName") ?: "Январь"
+                // MonthDaysScreen(navController, monthName)  Здесь твой экран с календарём на месяц
             }
         }
     }

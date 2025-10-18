@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">UniSchedule</string>
+    <string name="login">Войти</string>
+    <string name="authorization">Авторизация</string>
+    <string name="to_create">Создать аккаунт</string>
+    <string name="registration">Регистрация</string>
+    <string name="login_input">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="login_success">Вход выполнен</string>
+    <string name="login_error">Неверный логин или пароль</string>
+    <string name="password2">Повторите пароль</string>
+    <string name="error_empty_fields">Все поля должны быть заполнены</string>
+    <string name="error_password_length">Пароль должен содержать минимум 8 символов</string>
+    <string name="error_password_digit">Пароль должен содержать хотя бы одну цифру</string>
+    <string name="error_password_upper">Пароль должен содержать хотя бы одну заглавную букву</string>
+    <string name="error_password_lower">Пароль должен содержать хотя бы одну строчную букву</string>
+    <string name="error_password_mismatch">Пароли не совпадают</string>
+    <string name="registration_success">Регистрация успешна</string>
+    <string name="error_user_exists">Пользователь с таким логином уже существует</string>
 </resources>
