@@ -11,15 +11,21 @@ private val LightColors = lightColorScheme(
     onPrimary = White,
     secondary = Lillac,
     onSecondary = Black,
-    error = Red
+    error = Red,
+    surface = LightTiffany,
+    tertiary = LightBlue,
+    onTertiary = DarkBlue
 )
 
 private val DarkColors = darkColorScheme(
-    primary = Tiffany,
-    onPrimary = White,
-    secondary = Lillac,
-    onSecondary = Black,
-    error = Red
+    primary = DarkTiffany,
+    onPrimary = Black,
+    secondary = DarkLillac,
+    onSecondary = White,
+    error = Red,
+    surface = DarkLightTiffany,
+    tertiary = Blue,
+    onTertiary = DarkDarkBlue
 )
 
 @Composable

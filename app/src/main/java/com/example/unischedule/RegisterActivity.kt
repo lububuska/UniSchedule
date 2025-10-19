@@ -11,25 +11,23 @@ import com.example.unischedule.ui.theme.UniScheduleTheme
 class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val session = SessionManager(this)
 
         setContent {
             UniScheduleTheme {
                 RegisterScreen(
                     onRegisterSuccess = {
-                        session.saveLogin()
+                        session.setLoggedIn(true)
 
                         val intent = Intent(this, MainActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         startActivity(intent)
                         finish()
                     },
-                    onBack = {
-                        finish()
-                    }
+                    onBack = { finish() }
                 )
             }
         }
     }
 }
+

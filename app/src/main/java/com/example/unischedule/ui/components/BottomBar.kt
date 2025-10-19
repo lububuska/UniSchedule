@@ -26,7 +26,7 @@ fun BottomBar(navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(LightTiffany)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(vertical = 8.dp)
             .size(44.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -50,11 +50,15 @@ fun BottomBar(navController: NavController) {
         )
 
         BottomBarItem(
-            icon = R.drawable.ic_list,
-            label = "Список",
-            isSelected = selectedItem == "list",
-            onClick = { /* переход */ }
+            icon = R.drawable.ic_settings,
+            label = "Настройки",
+            isSelected = selectedItem == "settings",
+            onClick = {
+                selectedItem = "settings"
+                navController.navigate("settings")
+            }
         )
+
 
         BottomBarItem(
             icon = R.drawable.ic_adding,

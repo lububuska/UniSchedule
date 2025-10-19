@@ -8,18 +8,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.unischedule.ui.theme.Blue
+import com.example.unischedule.ui.theme.LightBlue
 import java.time.Month
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.*
 
 @Composable
-fun CalendarScreen(navController: NavController) {
+fun CalendarScreen(navController: NavController, currentLang: String) {
     val year = LocalDate.now().year
-    val months = Month.values().map {
-        it.getDisplayName(TextStyle.FULL, Locale.getDefault())
+    val months = if (currentLang == "ru") {
+        listOf(
+            "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+            "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+        )
+    } else {
+        Month.values().map { it.getDisplayName(TextStyle.FULL, Locale.ENGLISH) }
     }
+
 
     Column(
         modifier = Modifier
@@ -47,7 +53,7 @@ fun CalendarScreen(navController: NavController) {
                 ) {
                     Button(
                         onClick = { navController.navigate("month/${month}") },
-                        colors = ButtonDefaults.buttonColors(containerColor = Blue),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary),
                         shape = RoundedCornerShape(15.dp),
                         contentPadding = PaddingValues(4.dp),
                         modifier = Modifier.fillMaxSize()

@@ -3,51 +3,45 @@ package com.example.unischedule
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
-import androidx.navigation.compose.*
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.unischedule.ui.components.BottomBar
-import com.example.unischedule.ui.screens.*
+import com.example.unischedule.data.SettingsManager
+import com.example.unischedule.navigation.MainNavigation
 import com.example.unischedule.ui.theme.UniScheduleTheme
+import com.example.unischedule.utils.LocaleUtils
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val settings = SettingsManager(this)
+        val startLang = settings.getLanguage()
+        val startDark = settings.isDarkTheme()
+
+        LocaleUtils.setLocale(this, startLang)
+
         setContent {
-            UniScheduleTheme {
-                MainNavigation()
+            var currentLang by remember { mutableStateOf(startLang) }
+            var isDarkTheme by remember { mutableStateOf(startDark) }
+
+            val localizedContext = remember(currentLang) {
+                LocaleUtils.setLocale(this, currentLang)
             }
-        }
-    }
-}
 
-@Composable
-fun MainNavigation() {
-    val navController = rememberNavController()
-
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.primary,
-        bottomBar = { BottomBar(navController) }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = "calendar",
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            composable("calendar") { CalendarScreen(navController) }
-
-            composable(
-                route = "month/{monthName}",
-                arguments = listOf(navArgument("monthName") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val monthName = backStackEntry.arguments?.getString("monthName") ?: "Январь"
-                // MonthDaysScreen(navController, monthName)  Здесь твой экран с календарём на месяц
+            UniScheduleTheme(darkTheme = isDarkTheme) {
+                MainNavigation(
+                    context = localizedContext,
+                    settings = settings,
+                    isDarkTheme = isDarkTheme,
+                    onThemeChange = {
+                        isDarkTheme = it
+                        settings.setDarkTheme(it)
+                    },
+                    currentLanguage = currentLang,
+                    onLanguageChange = { newLang ->
+                        currentLang = newLang
+                        settings.setLanguage(newLang)
+                    }
+                )
             }
         }
     }
