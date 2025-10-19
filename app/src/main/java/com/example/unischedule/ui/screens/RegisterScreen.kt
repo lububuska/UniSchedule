@@ -24,7 +24,8 @@ import com.example.unischedule.data.UserDatabaseHelper
 @Composable
 fun RegisterScreen(
     onRegisterSuccess: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    darkTheme: Boolean
 ) {
     BackHandler {
         onBack()
@@ -38,9 +39,14 @@ fun RegisterScreen(
 
     val dbHelper = UserDatabaseHelper(context)
 
+    val backgroundPainter = painterResource(
+        if (darkTheme) R.drawable.login_and_registration_background_dark
+        else R.drawable.login_and_registration_background
+    )
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(R.drawable.login_and_registration_background),
+            painter = backgroundPainter,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()

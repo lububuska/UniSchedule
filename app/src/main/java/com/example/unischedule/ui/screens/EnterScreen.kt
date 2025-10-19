@@ -17,12 +17,20 @@ import androidx.compose.ui.res.stringResource
 
 @Composable
 
-fun EnterScreen(onLoginClick: () -> Unit) {
+fun EnterScreen(
+    onLoginClick: () -> Unit,
+    darkTheme: Boolean
+) {
     val context = LocalContext.current
+
+    val backgroundPainter = painterResource(
+        if (darkTheme) R.drawable.login_background_dark
+        else R.drawable.login_background
+    )
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(R.drawable.login_background),
+            painter = backgroundPainter,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()

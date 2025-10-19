@@ -25,7 +25,8 @@ import com.example.unischedule.data.UserDatabaseHelper
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    darkTheme: Boolean
 ) {
     BackHandler {
         onBack()
@@ -38,9 +39,14 @@ fun LoginScreen(
 
     val dbHelper = UserDatabaseHelper(context)
 
+    val backgroundPainter = painterResource(
+        if (darkTheme) R.drawable.login_and_registration_background_dark
+        else R.drawable.login_and_registration_background
+    )
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(R.drawable.login_and_registration_background),
+            painter = backgroundPainter,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -121,7 +127,7 @@ fun LoginScreen(
                 Text(
                     text = stringResource(id = R.string.to_create),
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSecondary
+                    color = if (darkTheme) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary
                 )
             }
         }

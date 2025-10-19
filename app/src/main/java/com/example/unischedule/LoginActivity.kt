@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import com.example.unischedule.data.SessionManager
 import com.example.unischedule.ui.screens.LoginScreen
 import com.example.unischedule.ui.theme.UniScheduleTheme
@@ -14,6 +15,8 @@ class LoginActivity : ComponentActivity() {
         val session = SessionManager(this)
 
         setContent {
+            val isDarkTheme = isSystemInDarkTheme()
+
             UniScheduleTheme {
                 LoginScreen(
                     onLoginSuccess = {
@@ -28,7 +31,8 @@ class LoginActivity : ComponentActivity() {
                         val intent = Intent(this, RegisterActivity::class.java)
                         startActivity(intent)
                     },
-                    onBack = { finish() }
+                    onBack = { finish() },
+                    darkTheme = isDarkTheme
                 )
             }
         }
