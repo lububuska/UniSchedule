@@ -12,34 +12,66 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
     null,
     DATABASE_VERSION
 ) {
+
     companion object {
         private const val DATABASE_NAME = "users.db"
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 4
+
+        // ---------- Таблица пользователей ----------
         private const val TABLE_USERS = "users"
         private const val COLUMN_ID = "id"
         private const val COLUMN_USERNAME = "username"
         private const val COLUMN_PASSWORD = "password"
+
+        // ---------- Таблица пар ----------
+        private const val TABLE_LESSONS = "lessons"
+        private const val COL_LESSON_ID = "id"
+        private const val COL_NAME = "name"
+        private const val COL_START = "start_time"
+        private const val COL_END = "end_time"
+        private const val COL_TEACHER = "teacher"
+        private const val COL_CLASSROOM = "classroom"
+        private const val COL_WEEKDAY = "weekday"
+        private const val COL_IS_EVEN = "is_even_week"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createTable = """
+        val createUsers = """
             CREATE TABLE $TABLE_USERS (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 $COLUMN_USERNAME TEXT NOT NULL UNIQUE,
                 $COLUMN_PASSWORD TEXT NOT NULL
             )
         """.trimIndent()
-        db.execSQL(createTable)
+
+        val createLessons = """
+            CREATE TABLE $TABLE_LESSONS (
+                $COL_LESSON_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COL_NAME TEXT NOT NULL,
+                $COL_START TEXT NOT NULL,
+                $COL_END TEXT NOT NULL,
+                $COL_TEACHER TEXT,
+                $COL_CLASSROOM TEXT,
+                $COL_WEEKDAY INTEGER NOT NULL,
+                $COL_IS_EVEN INTEGER NOT NULL
+            )
+        """.trimIndent()
+
+        db.execSQL(createUsers)
+        db.execSQL(createLessons)
+        insertSampleLessons(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
-        onCreate(db)
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE $TABLE_LESSONS ADD COLUMN $COL_CLASSROOM TEXT")
+        }
     }
+
+    // ----------------- Методы для пользователей -----------------
 
     fun addUser(username: String, password: String): Boolean {
         val db = writableDatabase
-        // Проверяем, есть ли уже такой логин
         val cursor = db.query(
             TABLE_USERS,
             arrayOf(COLUMN_USERNAME),
@@ -52,7 +84,7 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
 
         if (exists) {
             db.close()
-            return false // пользователь уже существует
+            return false
         }
 
         val values = ContentValues().apply {
@@ -83,5 +115,76 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
         cursor.close()
         db.close()
         return user
+    }
+
+    // ----------------- Методы для пар -----------------
+
+    fun addLesson(lesson: Lesson): Long {
+        val db = writableDatabase
+        val cv = ContentValues().apply {
+            put(COL_NAME, lesson.name)
+            put(COL_START, lesson.startTime)
+            put(COL_END, lesson.endTime)
+            put(COL_TEACHER, lesson.teacher)
+            put(COL_CLASSROOM, lesson.classroom)
+            put(COL_WEEKDAY, lesson.weekday)
+            put(COL_IS_EVEN, if (lesson.isEvenWeek) 1 else 0)
+        }
+        val id = db.insert(TABLE_LESSONS, null, cv)
+        db.close()
+        return id
+    }
+
+    fun getLessonsForDay(weekday: Int, isEvenWeek: Boolean): List<Lesson> {
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_LESSONS,
+            null,
+            "$COL_WEEKDAY = ? AND $COL_IS_EVEN = ?",
+            arrayOf(weekday.toString(), if (isEvenWeek) "1" else "0"),
+            null, null,
+            "$COL_START ASC"
+        )
+
+        val lessons = mutableListOf<Lesson>()
+        if (cursor.moveToFirst()) {
+            do {
+                val lesson = Lesson(
+                    id = cursor.getInt(cursor.getColumnIndexOrThrow(COL_LESSON_ID)),
+                    name = cursor.getString(cursor.getColumnIndexOrThrow(COL_NAME)),
+                    startTime = cursor.getString(cursor.getColumnIndexOrThrow(COL_START)),
+                    endTime = cursor.getString(cursor.getColumnIndexOrThrow(COL_END)),
+                    teacher = cursor.getString(cursor.getColumnIndexOrThrow(COL_TEACHER)),
+                    classroom = cursor.getString(cursor.getColumnIndexOrThrow(COL_CLASSROOM)),
+                    weekday = cursor.getInt(cursor.getColumnIndexOrThrow(COL_WEEKDAY)),
+                    isEvenWeek = cursor.getInt(cursor.getColumnIndexOrThrow(COL_IS_EVEN)) == 1
+                )
+                lessons.add(lesson)
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        db.close()
+        return lessons
+    }
+
+    private fun insertSampleLessons(db: SQLiteDatabase) {
+        val lessons = listOf(
+            Lesson(0, "Нейросетевые и нечёткие модели", "12:40", "14:00", "Городецкий Э.Р.", "412", 1, true),
+            Lesson(0, "Алгоритмы и структуры данных", "14:10", "15:40", "Иванов И.И.", "207", 1, true),
+            Lesson(0, "Математика", "16:00", "17:35", "Петров П.П.", "301", 2, false)
+        )
+
+        lessons.forEach {
+            val cv = ContentValues().apply {
+                put(COL_NAME, it.name)
+                put(COL_START, it.startTime)
+                put(COL_END, it.endTime)
+                put(COL_TEACHER, it.teacher)
+                put(COL_CLASSROOM, it.classroom)
+                put(COL_WEEKDAY, it.weekday)
+                put(COL_IS_EVEN, if (it.isEvenWeek) 1 else 0)
+            }
+            db.insert(TABLE_LESSONS, null, cv)
+        }
     }
 }

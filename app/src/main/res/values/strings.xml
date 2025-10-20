@@ -21,5 +21,22 @@
     <string name="dark_theme">Тёмная тема</string>
     <string name="language">Английский язык</string>
     <string name="logout">Выйти из аккаунта</string>
-
+    <string name="lesson_name">Название пары</string>
+    <string name="add">Добавить</string>
+    <string name="professor">Преподаватель</string>
+    <string name="auditorium">Аудитория (опционально)</string>
+    <string name="start">Начало</string>
+    <string name="end">Конец</string>
+    <string name="day_of_week">День недели</string>
+    <string name="even_week">Числитель</string>
+    <string name="day_monday">Понедельник</string>
+    <string name="day_tuesday">Вторник</string>
+    <string name="day_wednesday">Среда</string>
+    <string name="day_thursday">Четверг</string>
+    <string name="day_friday">Пятница</string>
+    <string name="day_saturday">Суббота</string>
+    <string name="day_sunday">Воскресенье</string>
+    <string name="close">Закрыть</string>
+    <string name="lesson_added">Пара добавлена</string>
+    <string name="fill_required_fields">Заполните обязательные поля</string>
 </resources>

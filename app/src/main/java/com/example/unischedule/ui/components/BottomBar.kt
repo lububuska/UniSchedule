@@ -20,7 +20,10 @@ import com.example.unischedule.ui.theme.LightTiffany
 
 
 @Composable
-fun BottomBar(navController: NavController) {
+fun BottomBar(
+    navController: NavController,
+    onAddClick: () -> Unit
+) {
     var selectedItem by remember { mutableStateOf("calendar") }
 
     Row(
@@ -46,7 +49,10 @@ fun BottomBar(navController: NavController) {
             icon = R.drawable.ic_clock,
             label = "Сегодня",
             isSelected = selectedItem == "today",
-            onClick = { /* переход */ }
+            onClick = {
+                selectedItem = "today"
+                navController.navigate("today")
+            }
         )
 
         BottomBarItem(
@@ -64,7 +70,10 @@ fun BottomBar(navController: NavController) {
             icon = R.drawable.ic_adding,
             label = "Добавить",
             isSelected = selectedItem == "add",
-            onClick = { /* переход */ }
+            onClick = {
+                selectedItem = "add"
+                onAddClick()
+            }
         )
     }
 }

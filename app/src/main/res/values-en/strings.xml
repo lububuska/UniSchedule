@@ -22,4 +22,22 @@
     <string name="dark_theme">Dark theme</string>
     <string name="language">Russian language</string>
     <string name="logout">Log out</string>
+    <string name="lesson_name">Name of the subject</string>
+    <string name="add">Add</string>
+    <string name="professor">Professor</string>
+    <string name="auditorium">Auditorium (optional)</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+    <string name="day_of_week">Day of the week</string>
+    <string name="even_week">Numirator</string>
+    <string name="day_monday">Monday</string>
+    <string name="day_tuesday">Tuesday</string>
+    <string name="day_wednesday">Wednesday</string>
+    <string name="day_thursday">Thursday</string>
+    <string name="day_friday">Friday</string>
+    <string name="day_saturday">Saturday</string>
+    <string name="day_sunday">Sunday</string>
+    <string name="close">Close</string>
+    <string name="lesson_added">Lesson is added</string>
+    <string name="fill_required_fields">Fill all required fields</string>
 </resources>

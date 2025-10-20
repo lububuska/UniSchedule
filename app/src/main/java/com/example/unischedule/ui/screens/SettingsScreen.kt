@@ -89,8 +89,8 @@ fun SettingsScreen(
                     uncheckedThumbColor = MaterialTheme.colorScheme.tertiary,
                     checkedTrackColor = MaterialTheme.colorScheme.onTertiary,
                     uncheckedTrackColor = MaterialTheme.colorScheme.onTertiary,
-                    checkedBorderColor = MaterialTheme.colorScheme.tertiary,   // цвет рамки при включенном
-                    uncheckedBorderColor = MaterialTheme.colorScheme.tertiary // цвет рамки при выключенном
+                    checkedBorderColor = MaterialTheme.colorScheme.tertiary,
+                    uncheckedBorderColor = MaterialTheme.colorScheme.tertiary
                 )
             )
 
@@ -119,10 +119,9 @@ fun SettingsScreen(
                     uncheckedThumbColor = MaterialTheme.colorScheme.tertiary,
                     checkedTrackColor = MaterialTheme.colorScheme.onTertiary,
                     uncheckedTrackColor = MaterialTheme.colorScheme.onTertiary,
-                    checkedBorderColor = MaterialTheme.colorScheme.tertiary,   // цвет рамки при включенном
-                    uncheckedBorderColor = MaterialTheme.colorScheme.tertiary // цвет рамки при выключенном
+                    checkedBorderColor = MaterialTheme.colorScheme.tertiary,
+                    uncheckedBorderColor = MaterialTheme.colorScheme.tertiary
                 )
-
             )
         }
 
