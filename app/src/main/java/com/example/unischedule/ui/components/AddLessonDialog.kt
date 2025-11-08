@@ -74,6 +74,9 @@ fun AddLessonDialog(
     var selectedDayNumber by remember { mutableStateOf(1) }
     var isEvenWeek by remember { mutableStateOf(true) }
 
+    val prefs = context.getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+    val userId = prefs.getString("user_id", null)
+
     val localizedContext = remember(currentLanguage) {
         LocaleUtils.setLocale(context, currentLanguage)
     }
@@ -131,7 +134,8 @@ fun AddLessonDialog(
                             teacher = if (teacher.isBlank()) "—" else teacher,
                             classroom = if (classroom.isBlank()) "—" else classroom,
                             weekday = selectedDayNumber,
-                            isEvenWeek = isEvenWeek
+                            isEvenWeek = isEvenWeek,
+                            userId = userId
                         )
 
                         db.addLesson(lesson)

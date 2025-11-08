@@ -15,7 +15,7 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "users.db"
-        private const val DATABASE_VERSION = 4
+        private const val DATABASE_VERSION = 6
 
         // ---------- Таблица пользователей ----------
         private const val TABLE_USERS = "users"
@@ -33,6 +33,7 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
         private const val COL_CLASSROOM = "classroom"
         private const val COL_WEEKDAY = "weekday"
         private const val COL_IS_EVEN = "is_even_week"
+        private const val COL_USER_ID = "user_id"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -53,7 +54,8 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 $COL_TEACHER TEXT,
                 $COL_CLASSROOM TEXT,
                 $COL_WEEKDAY INTEGER NOT NULL,
-                $COL_IS_EVEN INTEGER NOT NULL
+                $COL_IS_EVEN INTEGER NOT NULL,
+                $COL_USER_ID TEXT NOT NULL
             )
         """.trimIndent()
 
@@ -117,6 +119,25 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
         return user
     }
 
+    fun getUserId(username: String): Int? {
+        val db = readableDatabase
+        val cursor = db.query(
+            "users",
+            arrayOf("id"),
+            "username = ?",
+            arrayOf(username),
+            null, null, null
+        )
+        var id: Int? = null
+        if (cursor.moveToFirst()) {
+            id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+        }
+        cursor.close()
+        db.close()
+        return id
+    }
+
+
     // ----------------- Методы для пар -----------------
 
     fun addLesson(lesson: Lesson): Long {
@@ -129,19 +150,20 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
             put(COL_CLASSROOM, lesson.classroom)
             put(COL_WEEKDAY, lesson.weekday)
             put(COL_IS_EVEN, if (lesson.isEvenWeek) 1 else 0)
+            put(COL_USER_ID, lesson.userId)
         }
         val id = db.insert(TABLE_LESSONS, null, cv)
         db.close()
         return id
     }
 
-    fun getLessonsForDay(weekday: Int, isEvenWeek: Boolean): List<Lesson> {
+    fun getLessonsForDay(weekday: Int, isEvenWeek: Boolean, userId: String): List<Lesson> {
         val db = readableDatabase
         val cursor = db.query(
             TABLE_LESSONS,
             null,
-            "$COL_WEEKDAY = ? AND $COL_IS_EVEN = ?",
-            arrayOf(weekday.toString(), if (isEvenWeek) "1" else "0"),
+            "$COL_WEEKDAY = ? AND $COL_IS_EVEN = ? AND $COL_USER_ID = ?",
+            arrayOf(weekday.toString(), if (isEvenWeek) "1" else "0", userId),
             null, null,
             "$COL_START ASC"
         )
@@ -157,7 +179,8 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
                     teacher = cursor.getString(cursor.getColumnIndexOrThrow(COL_TEACHER)),
                     classroom = cursor.getString(cursor.getColumnIndexOrThrow(COL_CLASSROOM)),
                     weekday = cursor.getInt(cursor.getColumnIndexOrThrow(COL_WEEKDAY)),
-                    isEvenWeek = cursor.getInt(cursor.getColumnIndexOrThrow(COL_IS_EVEN)) == 1
+                    isEvenWeek = cursor.getInt(cursor.getColumnIndexOrThrow(COL_IS_EVEN)) == 1,
+                    userId = cursor.getString(cursor.getColumnIndexOrThrow(COL_USER_ID))
                 )
                 lessons.add(lesson)
             } while (cursor.moveToNext())
@@ -168,10 +191,11 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     private fun insertSampleLessons(db: SQLiteDatabase) {
+        val demoUserId = "1"
         val lessons = listOf(
-            Lesson(0, "Нейросетевые и нечёткие модели", "12:40", "14:00", "Городецкий Э.Р.", "412", 1, true),
-            Lesson(0, "Алгоритмы и структуры данных", "14:10", "15:40", "Иванов И.И.", "207", 1, true),
-            Lesson(0, "Математика", "16:00", "17:35", "Петров П.П.", "301", 2, false)
+            Lesson(0, "Нейросетевые и нечёткие модели", "12:40", "14:00", "Городецкий Э.Р.", "412", 1, true, demoUserId),
+            Lesson(0, "Алгоритмы и структуры данных", "14:10", "15:40", "Иванов И.И.", "207", 1, true, demoUserId),
+            Lesson(0, "Математика", "16:00", "17:35", "Петров П.П.", "301", 2, false, demoUserId)
         )
 
         lessons.forEach {
@@ -183,8 +207,10 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
                 put(COL_CLASSROOM, it.classroom)
                 put(COL_WEEKDAY, it.weekday)
                 put(COL_IS_EVEN, if (it.isEvenWeek) 1 else 0)
+                put(COL_USER_ID, it.userId)
             }
             db.insert(TABLE_LESSONS, null, cv)
         }
     }
+
 }

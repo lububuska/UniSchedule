@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.unischedule.R
 import com.example.unischedule.data.UserDatabaseHelper
 import com.example.unischedule.data.Lesson
 import com.example.unischedule.utils.DateUtils
@@ -20,7 +21,7 @@ import java.time.temporal.WeekFields
 import java.util.*
 
 @Composable
-fun TodayLessonsScreen(refreshTrigger: Int) {
+fun TodayLessonsScreen(refreshTrigger: Int, localizedContext: android.content.Context) {
     val context = LocalContext.current
     val db = remember { UserDatabaseHelper(context) }
 
@@ -28,9 +29,15 @@ fun TodayLessonsScreen(refreshTrigger: Int) {
     val weekday = today.dayOfWeek.value
     val weekNumber = today.get(WeekFields.of(Locale.getDefault()).weekOfYear())
     val isEvenWeek = weekNumber % 2 == 0
-    println("Week number: $weekNumber, isEvenWeek: ${weekNumber % 2 == 0}")
 
-    val lessons = db.getLessonsForDay(weekday, isEvenWeek = true) // просто показать все
+    val prefs = context.getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+    val userId = prefs.getString("user_id", null)
+
+    val lessons by remember(refreshTrigger) {
+        mutableStateOf(
+            if (userId != null) db.getLessonsForDay(weekday, isEvenWeek, userId) else emptyList()
+        )
+    }
 
     val dayName = DateUtils.getLocalizedDayName(today)
     val formattedDate = DateUtils.getLocalizedDateWithMonth(today)
@@ -60,7 +67,10 @@ fun TodayLessonsScreen(refreshTrigger: Int) {
 
         if (lessons.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Нет пар на сегодня", color = MaterialTheme.colorScheme.onSecondary)
+                Text(
+                    localizedContext.getString(R.string.no_lessons_today),
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
             }
         } else {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -84,7 +94,7 @@ fun TodayLessonsScreen(refreshTrigger: Int) {
                             val teacherText = lesson.teacher ?: ""
                             val combinedText = listOf(classroomText, teacherText)
                                 .filter { it.isNotBlank() }
-                                .joinToString(" ") // через пробел
+                                .joinToString(" ")
 
                             if (combinedText.isNotEmpty()) {
                                 Text(
@@ -100,4 +110,3 @@ fun TodayLessonsScreen(refreshTrigger: Int) {
         }
     }
 }
-

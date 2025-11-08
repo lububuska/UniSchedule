@@ -179,11 +179,21 @@ fun RegisterScreen(
                     else -> {
                         val success = dbHelper.addUser(username, password)
                         if (success) {
+                            val userId = dbHelper.getUserId(username)
+                            if (userId != null) {
+                                val prefs = context.getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+                                prefs.edit()
+                                    .putString("user_id", userId.toString())
+                                    .putString("username", username)
+                                    .apply()
+                            }
+
                             Toast.makeText(context, context.getString(R.string.registration_success), Toast.LENGTH_SHORT).show()
                             onRegisterSuccess()
                         } else {
                             errorMessage = context.getString(R.string.error_user_exists)
                         }
+
                     }
                 }
             },

@@ -26,7 +26,8 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit,
     onBack: () -> Unit,
-    darkTheme: Boolean
+    darkTheme: Boolean,
+    localizedContext: android.content.Context
 ) {
     BackHandler {
         onBack()
@@ -136,13 +137,22 @@ fun LoginScreen(
             onClick = {
                 val user = dbHelper.getUser(username)
                 if (user != null && user.second == password) {
-                    Toast.makeText(context, context.getString(R.string.login_success), Toast.LENGTH_SHORT).show()
-                    onLoginSuccess()
+                    val userId = dbHelper.getUserId(username)
+                    if (userId != null) {
+                        val prefs = context.getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
+                        prefs.edit()
+                            .putString("user_id", userId.toString())
+                            .putString("username", username)
+                            .apply()
+
+                        Toast.makeText(context, context.getString(R.string.login_success), Toast.LENGTH_SHORT).show()
+                        onLoginSuccess()
+                    } else {
+                        errorMessage = localizedContext.getString(R.string.no_user_id)
+                    }
                 } else {
                     errorMessage = context.getString(R.string.login_error)
                 }
-
-
             },
             shape = RoundedCornerShape(15.dp),
             colors = ButtonDefaults.buttonColors(

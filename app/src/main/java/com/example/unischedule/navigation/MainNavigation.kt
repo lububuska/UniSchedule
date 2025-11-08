@@ -25,8 +25,11 @@ fun MainNavigation(
 ) {
     val navController = rememberNavController()
     var showAddLessonDialog by remember { mutableStateOf(false) }
-
     var refreshTrigger by remember { mutableStateOf(0) }
+
+    val localizedContext = remember(currentLanguage) {
+        com.example.unischedule.utils.LocaleUtils.setLocale(context, currentLanguage)
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.primary,
@@ -45,7 +48,10 @@ fun MainNavigation(
             composable("calendar") { CalendarScreen(navController, currentLang = currentLanguage) }
 
             composable("today") {
-                TodayLessonsScreen(refreshTrigger = refreshTrigger)
+                TodayLessonsScreen(
+                    refreshTrigger = refreshTrigger,
+                    localizedContext = localizedContext
+                )
             }
 
             composable("settings") {

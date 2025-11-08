@@ -39,4 +39,6 @@
     <string name="close">Закрыть</string>
     <string name="lesson_added">Пара добавлена</string>
     <string name="fill_required_fields">Заполните обязательные поля</string>
+    <string name="no_lessons_today">Нет пар на сегодня</string>
+    <string name="no_user_id">Ошибка: не удалось получить ID пользователя</string>
 </resources>

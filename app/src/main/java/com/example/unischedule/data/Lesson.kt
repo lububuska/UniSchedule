@@ -8,5 +8,6 @@ data class Lesson(
     val teacher: String?,
     val classroom: String?,
     val weekday: Int,
-    val isEvenWeek: Boolean
+    val isEvenWeek: Boolean,
+    val userId: String?
 )
