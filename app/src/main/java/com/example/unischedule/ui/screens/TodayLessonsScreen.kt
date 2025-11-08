@@ -21,26 +21,29 @@ import java.time.temporal.WeekFields
 import java.util.*
 
 @Composable
-fun TodayLessonsScreen(refreshTrigger: Int, localizedContext: android.content.Context) {
+fun TodayLessonsScreen(
+    refreshTrigger: Int,
+    localizedContext: android.content.Context = LocalContext.current
+) {
     val context = LocalContext.current
     val db = remember { UserDatabaseHelper(context) }
 
-    val today = LocalDate.now()
+    val today = java.time.LocalDate.now()
     val weekday = today.dayOfWeek.value
-    val weekNumber = today.get(WeekFields.of(Locale.getDefault()).weekOfYear())
+    val weekNumber = today.get(java.time.temporal.WeekFields.of(java.util.Locale.getDefault()).weekOfYear())
     val isEvenWeek = weekNumber % 2 == 0
 
     val prefs = context.getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
     val userId = prefs.getString("user_id", null)
 
-    val lessons by remember(refreshTrigger) {
-        mutableStateOf(
-            if (userId != null) db.getLessonsForDay(weekday, isEvenWeek, userId) else emptyList()
-        )
+    val lessons = if (userId != null) {
+        db.getLessonsForDay(weekday, isEvenWeek, userId)
+    } else {
+        emptyList()
     }
 
-    val dayName = DateUtils.getLocalizedDayName(today)
-    val formattedDate = DateUtils.getLocalizedDateWithMonth(today)
+    val dayName = com.example.unischedule.utils.DateUtils.getLocalizedDayName(today)
+    val formattedDate = com.example.unischedule.utils.DateUtils.getLocalizedDateWithMonth(today)
 
     Column(
         modifier = Modifier
@@ -84,7 +87,7 @@ fun TodayLessonsScreen(refreshTrigger: Int, localizedContext: android.content.Co
                             Text(
                                 "${lesson.startTime} — ${lesson.endTime}",
                                 style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                             )
                             Text(
                                 lesson.name,
@@ -103,7 +106,6 @@ fun TodayLessonsScreen(refreshTrigger: Int, localizedContext: android.content.Co
                                 )
                             }
                         }
-
                     }
                 }
             }

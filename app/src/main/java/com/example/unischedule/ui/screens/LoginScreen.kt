@@ -27,7 +27,7 @@ fun LoginScreen(
     onNavigateToRegister: () -> Unit,
     onBack: () -> Unit,
     darkTheme: Boolean,
-    localizedContext: android.content.Context
+    localizedContext: android.content.Context = LocalContext.current
 ) {
     BackHandler {
         onBack()

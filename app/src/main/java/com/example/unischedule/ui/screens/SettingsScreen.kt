@@ -125,6 +125,26 @@ fun SettingsScreen(
             )
         }
 
+        Button(
+            onClick = {
+                val telegramUrl = "https://t.me/lybybyska00"
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = android.net.Uri.parse(telegramUrl)
+                }
+                context.startActivity(intent)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onTertiary)
+        ) {
+            LocalizedText(
+                stringResId = R.string.telegram_feedback,
+                currentLanguage = currentLanguage,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
+            )
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
         Button(
