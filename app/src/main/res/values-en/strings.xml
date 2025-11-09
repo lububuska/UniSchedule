@@ -43,4 +43,23 @@
     <string name="no_lessons_today">There are no lessons for today</string>
     <string name="no_user_id">Error: failed to get user ID</string>
     <string name="telegram_feedback">Leave feedback or suggest an improvement</string>
+    <string name="month_january">January</string>
+    <string name="month_february">February</string>
+    <string name="month_march">March</string>
+    <string name="month_april">April</string>
+    <string name="month_may">May</string>
+    <string name="month_june">June</string>
+    <string name="month_july">July</string>
+    <string name="month_august">August</string>
+    <string name="month_september">September</string>
+    <string name="month_october">October</string>
+    <string name="month_november">November</string>
+    <string name="month_december">December</string>
+    <string name="day_monday_short">Mo</string>
+    <string name="day_tuesday_short">Tu</string>
+    <string name="day_wednesday_short">We</string>
+    <string name="day_thursday_short">Th</string>
+    <string name="day_friday_short">Fr</string>
+    <string name="day_saturday_short">Sa</string>
+    <string name="day_sunday_short">Su</string>
 </resources>

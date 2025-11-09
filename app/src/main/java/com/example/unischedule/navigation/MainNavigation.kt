@@ -13,6 +13,10 @@ import com.example.unischedule.ui.screens.CalendarScreen
 import com.example.unischedule.ui.screens.SettingsScreen
 import com.example.unischedule.ui.screens.TodayLessonsScreen
 import com.example.unischedule.data.Lesson
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.example.unischedule.ui.screens.MonthDaysScreen
+
 
 @Composable
 fun MainNavigation(
@@ -61,6 +65,18 @@ fun MainNavigation(
                     onThemeChange = onThemeChange,
                     currentLanguage = currentLanguage,
                     onLanguageChange = onLanguageChange
+                )
+            }
+
+            composable(
+                route = "month/{monthName}",
+                arguments = listOf(navArgument("monthName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val monthName = backStackEntry.arguments?.getString("monthName") ?: ""
+                MonthDaysScreen(
+                    navController = navController,
+                    monthName = monthName,
+                    currentLanguage = currentLanguage
                 )
             }
         }

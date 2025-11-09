@@ -61,7 +61,7 @@ fun SettingsScreen(
         LocalizedText(
             stringResId = R.string.settings,
             currentLanguage = currentLanguage,
-            style = MaterialTheme.typography.labelSmall.copy(
+            style = MaterialTheme.typography.labelMedium.copy(
                 color = MaterialTheme.colorScheme.onSecondary
             )
         )

@@ -1,5 +1,6 @@
 package com.example.unischedule.ui.components
 
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -89,7 +90,7 @@ fun BottomBarItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.clickable(
             interactionSource = remember { MutableInteractionSource() },
-            indication = rememberRipple()
+            indication = LocalIndication.current
         ) { onClick() }
 
     ) {
