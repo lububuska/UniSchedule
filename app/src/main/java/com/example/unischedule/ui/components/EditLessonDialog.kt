@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -304,6 +305,28 @@ fun EditLessonDialog(
                     )
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    db.deleteLesson(lesson.id)
+                    Toast.makeText(context, localizedContext.getString(R.string.lesson_deleted), Toast.LENGTH_SHORT).show()
+                    onLessonUpdated(lesson.copy(id = -1))
+                    onDismiss()
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+            ) {
+                Text(
+                    text = localizedContext.getString(R.string.delete),
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
+
         }
     }
 }

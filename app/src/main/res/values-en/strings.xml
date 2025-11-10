@@ -66,4 +66,6 @@
     <string name="invalid_time_range">Invalid time range</string>
     <string name="lesson_updated">Lesson updated</string>
     <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="lesson_deleted">Lesson is deleted</string>
 </resources>

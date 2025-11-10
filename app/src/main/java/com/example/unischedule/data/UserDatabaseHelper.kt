@@ -207,6 +207,14 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
         return lessons
     }
 
+    fun deleteLesson(lessonId: Int): Int {
+        val db = writableDatabase
+        val result = db.delete(TABLE_LESSONS, "$COL_LESSON_ID = ?", arrayOf(lessonId.toString()))
+        db.close()
+        return result
+    }
+
+
     private fun insertSampleLessons(db: SQLiteDatabase) {
         val demoUserId = "1"
         val lessons = listOf(

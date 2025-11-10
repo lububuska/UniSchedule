@@ -65,4 +65,6 @@
     <string name="invalid_time_range">Неверный диапазон времени</string>
     <string name="lesson_updated">Пара обновлена</string>
     <string name="save">Сохранить</string>
+    <string name="delete">Удалить</string>
+    <string name="lesson_deleted">Пара удалена</string>
 </resources>
