@@ -24,7 +24,7 @@
     <string name="lesson_name">Название пары</string>
     <string name="add">Добавить</string>
     <string name="professor">Преподаватель</string>
-    <string name="auditorium">Аудитория (опционально)</string>
+    <string name="auditorium">Аудитория</string>
     <string name="start">Начало</string>
     <string name="end">Конец</string>
     <string name="day_of_week">День недели</string>
@@ -61,4 +61,6 @@
     <string name="day_friday_short">Пт</string>
     <string name="day_saturday_short">Сб</string>
     <string name="day_sunday_short">Вс</string>
+    <string name="invalid_time_format">Неверный формат времени</string>
+    <string name="invalid_time_range">Неверный диапазон времени</string>
 </resources>

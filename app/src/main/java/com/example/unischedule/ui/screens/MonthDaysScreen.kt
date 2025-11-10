@@ -37,7 +37,6 @@ fun MonthDaysScreen(
 
     val year = LocalDate.now().year
 
-    // Месяцы
     val monthStrings = listOf(
         localizedContext.getString(R.string.month_january),
         localizedContext.getString(R.string.month_february),
@@ -86,7 +85,6 @@ fun MonthDaysScreen(
                 .padding(bottom = 12.dp)
         )
 
-        // Дни недели
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -110,12 +108,11 @@ fun MonthDaysScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Пустые ячейки перед началом месяца
+
             items(startDayOfWeek) {
                 Box(modifier = Modifier.size(40.dp))
             }
 
-            // Дни месяца
             items(days) { day ->
                 val dayOfWeek = LocalDate.of(year, month, day).dayOfWeek
                 val isWeekend = dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY
@@ -136,7 +133,8 @@ fun MonthDaysScreen(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = LocalIndication.current
                         ) {
-                            // TODO: переход на экран дня
+                            val selectedDate = LocalDate.of(year, month, day)
+                            navController.navigate("day/${selectedDate}")
                         },
                     contentAlignment = Alignment.Center
                 ) {

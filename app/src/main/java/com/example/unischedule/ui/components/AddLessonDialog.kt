@@ -1,9 +1,11 @@
 package com.example.unischedule.ui.components
 
+import android.app.TimePickerDialog
 import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
@@ -12,14 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 import com.example.unischedule.R
 import com.example.unischedule.data.Lesson
 import com.example.unischedule.data.UserDatabaseHelper
 import com.example.unischedule.ui.theme.Grey
 import com.example.unischedule.utils.LocaleUtils
+import java.util.*
 
 @Composable
 fun OutlinedTextFieldLocalized(
@@ -55,6 +57,57 @@ fun OutlinedTextFieldLocalized(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimePickerField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: @Composable (() -> Unit)? = null,
+    textStyle: TextStyle = MaterialTheme.typography.labelMedium.copy(
+        color = MaterialTheme.colorScheme.onSecondary
+    )
+) {
+    val context = LocalContext.current
+
+    fun showTimePicker(onTimeSelected: (String) -> Unit) {
+        val calendar = Calendar.getInstance()
+        TimePickerDialog(
+            context,
+            { _, hour: Int, minute: Int ->
+                val formatted = String.format("%02d:%02d", hour, minute)
+                onTimeSelected(formatted)
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
+        ).show()
+    }
+
+    Box(
+        modifier = modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { showTimePicker(onValueChange) }
+    ) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = {},
+            modifier = Modifier.fillMaxWidth(),
+            enabled = false,
+            textStyle = textStyle,
+            colors = OutlinedTextFieldDefaults.colors(
+                disabledContainerColor = Color.Transparent,
+                disabledBorderColor = MaterialTheme.colorScheme.onPrimary,
+                disabledTextColor = MaterialTheme.colorScheme.onSecondary,
+                disabledLabelColor = MaterialTheme.colorScheme.onSecondary
+            ),
+            shape = RoundedCornerShape(15.dp),
+            label = label
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,8 +122,8 @@ fun AddLessonDialog(
     var name by remember { mutableStateOf("") }
     var teacher by remember { mutableStateOf("") }
     var classroom by remember { mutableStateOf("") }
-    var startTime by remember { mutableStateOf("") }
-    var endTime by remember { mutableStateOf("") }
+    var startTime by remember { mutableStateOf("08:00") }
+    var endTime by remember { mutableStateOf("08:00") }
     var selectedDayNumber by remember { mutableStateOf(1) }
     var isEvenWeek by remember { mutableStateOf(true) }
 
@@ -125,26 +178,50 @@ fun AddLessonDialog(
                 }
 
                 TextButton(onClick = {
-                    if (name.isNotBlank() && startTime.isNotBlank() && endTime.isNotBlank()) {
-                        val lesson = Lesson(
-                            id = 0,
-                            name = name,
-                            startTime = startTime,
-                            endTime = endTime,
-                            teacher = if (teacher.isBlank()) "—" else teacher,
-                            classroom = if (classroom.isBlank()) "—" else classroom,
-                            weekday = selectedDayNumber,
-                            isEvenWeek = isEvenWeek,
-                            userId = userId
-                        )
-
-                        db.addLesson(lesson)
-                        Toast.makeText(context, localizedContext.getString(R.string.lesson_added), Toast.LENGTH_SHORT).show()
-                        onLessonAdded(lesson)
-                        onDismiss()
-                    } else {
-                        Toast.makeText(context, localizedContext.getString(R.string.fill_required_fields), Toast.LENGTH_SHORT).show()
+                    if (name.isBlank() || startTime.isBlank() || endTime.isBlank()) {
+                        Toast.makeText(
+                            context,
+                            localizedContext.getString(R.string.fill_required_fields),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@TextButton
                     }
+
+                    val startParts = startTime.split(":").map { it.toInt() }
+                    val endParts = endTime.split(":").map { it.toInt() }
+
+                    val startMinutes = startParts[0] * 60 + startParts[1]
+                    val endMinutes = endParts[0] * 60 + endParts[1]
+
+                    if (endMinutes <= startMinutes) {
+                        Toast.makeText(
+                            context,
+                            localizedContext.getString(R.string.invalid_time_range),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@TextButton
+                    }
+
+                    val lesson = Lesson(
+                        id = 0,
+                        name = name,
+                        startTime = startTime,
+                        endTime = endTime,
+                        teacher = if (teacher.isBlank()) "—" else teacher,
+                        classroom = if (classroom.isBlank()) "—" else classroom,
+                        weekday = selectedDayNumber,
+                        isEvenWeek = isEvenWeek,
+                        userId = userId
+                    )
+
+                    db.addLesson(lesson)
+                    Toast.makeText(
+                        context,
+                        localizedContext.getString(R.string.lesson_added),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    onLessonAdded(lesson)
+                    onDismiss()
                 }) {
                     Text(
                         text = localizedContext.getString(R.string.add),
@@ -156,7 +233,6 @@ fun AddLessonDialog(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Поля ввода
             OutlinedTextFieldLocalized(name, R.string.lesson_name, { name = it }, localizedContext)
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedTextFieldLocalized(teacher, R.string.professor, { teacher = it }, localizedContext)
@@ -164,73 +240,41 @@ fun AddLessonDialog(
             OutlinedTextFieldLocalized(classroom, R.string.auditorium, { classroom = it }, localizedContext)
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Поля выбора времени
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedTextField(
+                TimePickerField(
                     value = startTime,
                     onValueChange = { startTime = it },
-                    textStyle = MaterialTheme.typography.labelMedium.copy(color = MaterialTheme.colorScheme.onSecondary),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedTextColor = MaterialTheme.colorScheme.onSecondary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSecondary
-                    ),
-                    shape = RoundedCornerShape(15.dp),
-                    placeholder = {
-                        Text(
-                            text = localizedContext.getString(R.string.start),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Grey
-                        ) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    label = { Text(localizedContext.getString(R.string.start), style = MaterialTheme.typography.bodySmall) }
                 )
-                OutlinedTextField(
+                TimePickerField(
                     value = endTime,
                     onValueChange = { endTime = it },
-                    textStyle = MaterialTheme.typography.labelMedium.copy(color = MaterialTheme.colorScheme.onSecondary),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedTextColor = MaterialTheme.colorScheme.onSecondary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSecondary
-                    ),
-                    shape = RoundedCornerShape(15.dp),
-                    placeholder = {
-                        Text(
-                            text = localizedContext.getString(R.string.end),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Grey
-                        ) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    label = { Text(localizedContext.getString(R.string.end), style = MaterialTheme.typography.bodySmall) }
                 )
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // День недели
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded }
             ) {
-                val selectedDayName = localizedDaysOfWeek.first { it.second == selectedDayNumber }.first
+                val selectedDayName =
+                    localizedDaysOfWeek.first { it.second == selectedDayNumber }.first
                 OutlinedTextField(
                     value = selectedDayName,
                     onValueChange = {},
-                    textStyle = MaterialTheme.typography.labelMedium.copy(color = MaterialTheme.colorScheme.onSecondary),
+                    textStyle = MaterialTheme.typography.labelMedium.copy(
+                        color = MaterialTheme.colorScheme.onSecondary
+                    ),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-                        focusedTextColor = MaterialTheme.colorScheme.onSecondary,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSecondary
+                        unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary
                     ),
-                    placeholder = { Text(localizedContext.getString(R.string.day_of_week), color = Grey) },
                     shape = RoundedCornerShape(15.dp),
                     readOnly = true,
                     modifier = Modifier
@@ -256,6 +300,7 @@ fun AddLessonDialog(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // Четность недели
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -272,12 +317,11 @@ fun AddLessonDialog(
                         checkedThumbColor = MaterialTheme.colorScheme.tertiary,
                         uncheckedThumbColor = MaterialTheme.colorScheme.tertiary,
                         checkedTrackColor = MaterialTheme.colorScheme.onTertiary,
-                        uncheckedTrackColor = MaterialTheme.colorScheme.onTertiary,
-                        checkedBorderColor = MaterialTheme.colorScheme.tertiary,
-                        uncheckedBorderColor = MaterialTheme.colorScheme.tertiary
+                        uncheckedTrackColor = MaterialTheme.colorScheme.onTertiary
                     )
                 )
             }
         }
     }
 }
+

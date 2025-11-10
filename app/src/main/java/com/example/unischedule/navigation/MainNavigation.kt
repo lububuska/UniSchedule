@@ -15,6 +15,7 @@ import com.example.unischedule.ui.screens.TodayLessonsScreen
 import com.example.unischedule.data.Lesson
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.example.unischedule.ui.screens.DayLessonsScreen
 import com.example.unischedule.ui.screens.MonthDaysScreen
 
 
@@ -79,6 +80,15 @@ fun MainNavigation(
                     currentLanguage = currentLanguage
                 )
             }
+
+            composable(
+                route = "day/{dateString}",
+                arguments = listOf(navArgument("dateString") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val dateString = backStackEntry.arguments?.getString("dateString")
+                DayLessonsScreen(dateString = dateString, refreshTrigger = refreshTrigger)
+            }
+
         }
     }
 
