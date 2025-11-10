@@ -1,5 +1,7 @@
 package com.example.unischedule.ui.screens
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.unischedule.R
 import com.example.unischedule.data.UserDatabaseHelper
 import com.example.unischedule.data.Lesson
+import com.example.unischedule.ui.components.EditLessonDialog
 import com.example.unischedule.utils.DateUtils
 import java.time.LocalDate
 import java.time.temporal.WeekFields
@@ -27,23 +30,30 @@ fun TodayLessonsScreen(
 ) {
     val context = LocalContext.current
     val db = remember { UserDatabaseHelper(context) }
+    var lessons by remember { mutableStateOf<List<Lesson>>(emptyList()) }
+    var lessonToEdit by remember { mutableStateOf<Lesson?>(null) }
 
-    val today = java.time.LocalDate.now()
+    val today = LocalDate.now()
     val weekday = today.dayOfWeek.value
-    val weekNumber = today.get(java.time.temporal.WeekFields.of(java.util.Locale.getDefault()).weekOfYear())
+    val weekNumber = today.get(WeekFields.of(Locale.getDefault()).weekOfYear())
     val isEvenWeek = weekNumber % 2 == 0
 
     val prefs = context.getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
     val userId = prefs.getString("user_id", null)
+    val currentLanguage = prefs.getString("language", "ru") ?: "ru"
 
-    val lessons = if (userId != null) {
-        db.getLessonsForDay(weekday, isEvenWeek, userId)
-    } else {
-        emptyList()
+    fun loadLessons() {
+        if (userId != null) {
+            lessons = db.getLessonsForDay(weekday, isEvenWeek, userId)
+        }
     }
 
-    val dayName = com.example.unischedule.utils.DateUtils.getLocalizedDayName(today)
-    val formattedDate = com.example.unischedule.utils.DateUtils.getLocalizedDateWithMonth(today)
+    LaunchedEffect(key1 = refreshTrigger, key2 = userId) {
+        loadLessons()
+    }
+
+    val dayName = DateUtils.getLocalizedDayName(today)
+    val formattedDate = DateUtils.getLocalizedDateWithMonth(today)
 
     Column(
         modifier = Modifier
@@ -79,7 +89,12 @@ fun TodayLessonsScreen(
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(lessons) { lesson ->
                     Card(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) { lessonToEdit = lesson },
                         shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
                     ) {
@@ -87,7 +102,7 @@ fun TodayLessonsScreen(
                             Text(
                                 "${lesson.startTime} — ${lesson.endTime}",
                                 style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                                fontWeight = FontWeight.Bold
                             )
                             Text(
                                 lesson.name,
@@ -110,5 +125,17 @@ fun TodayLessonsScreen(
                 }
             }
         }
+    }
+
+    lessonToEdit?.let { lesson ->
+        EditLessonDialog(
+            lesson = lesson,
+            currentLanguage = currentLanguage,
+            onDismiss = { lessonToEdit = null },
+            onLessonUpdated = {
+                loadLessons()
+                lessonToEdit = null
+            }
+        )
     }
 }

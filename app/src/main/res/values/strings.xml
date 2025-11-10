@@ -63,4 +63,6 @@
     <string name="day_sunday_short">Вс</string>
     <string name="invalid_time_format">Неверный формат времени</string>
     <string name="invalid_time_range">Неверный диапазон времени</string>
+    <string name="lesson_updated">Пара обновлена</string>
+    <string name="save">Сохранить</string>
 </resources>

@@ -1,9 +1,6 @@
 package com.example.unischedule.ui.components
 
-import android.app.TimePickerDialog
 import android.widget.Toast
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -13,101 +10,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.graphics.Color
 import com.example.unischedule.R
 import com.example.unischedule.data.Lesson
 import com.example.unischedule.data.UserDatabaseHelper
-import com.example.unischedule.ui.theme.Grey
 import com.example.unischedule.utils.LocaleUtils
-import java.util.*
-
-@Composable
-fun OutlinedTextFieldLocalized(
-    value: String,
-    placeholderRes: Int,
-    onValueChange: (String) -> Unit,
-    localizedContext: android.content.Context,
-    textStyle: TextStyle = MaterialTheme.typography.labelMedium.copy(
-        color = MaterialTheme.colorScheme.onSecondary
-    )
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        textStyle = textStyle,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-            unfocusedContainerColor = MaterialTheme.colorScheme.onPrimary,
-            focusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary,
-            focusedTextColor = MaterialTheme.colorScheme.onSecondary,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSecondary
-        ),
-        shape = RoundedCornerShape(15.dp),
-        placeholder = {
-            Text(
-                text = localizedContext.getString(placeholderRes),
-                style = textStyle,
-                color = Grey
-            )
-        },
-        modifier = Modifier.fillMaxWidth()
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TimePickerField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    label: @Composable (() -> Unit)? = null,
-    textStyle: TextStyle = MaterialTheme.typography.labelMedium.copy(
-        color = MaterialTheme.colorScheme.onSecondary
-    )
-) {
-    val context = LocalContext.current
-
-    fun showTimePicker(onTimeSelected: (String) -> Unit) {
-        val calendar = Calendar.getInstance()
-        TimePickerDialog(
-            context,
-            { _, hour: Int, minute: Int ->
-                val formatted = String.format("%02d:%02d", hour, minute)
-                onTimeSelected(formatted)
-            },
-            calendar.get(Calendar.HOUR_OF_DAY),
-            calendar.get(Calendar.MINUTE),
-            true
-        ).show()
-    }
-
-    Box(
-        modifier = modifier
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { showTimePicker(onValueChange) }
-    ) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = {},
-            modifier = Modifier.fillMaxWidth(),
-            enabled = false,
-            textStyle = textStyle,
-            colors = OutlinedTextFieldDefaults.colors(
-                disabledContainerColor = Color.Transparent,
-                disabledBorderColor = MaterialTheme.colorScheme.onPrimary,
-                disabledTextColor = MaterialTheme.colorScheme.onSecondary,
-                disabledLabelColor = MaterialTheme.colorScheme.onSecondary
-            ),
-            shape = RoundedCornerShape(15.dp),
-            label = label
-        )
-    }
-}
+import com.example.unischedule.ui.components.TimePickerField
+import com.example.unischedule.ui.components.OutlinedTextFieldLocalized
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,7 +70,6 @@ fun AddLessonDialog(
                 .fillMaxSize()
                 .padding(20.dp)
         ) {
-            // Верхняя панель
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -240,7 +148,6 @@ fun AddLessonDialog(
             OutlinedTextFieldLocalized(classroom, R.string.auditorium, { classroom = it }, localizedContext)
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Поля выбора времени
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 TimePickerField(
                     value = startTime,
@@ -258,7 +165,6 @@ fun AddLessonDialog(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // День недели
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded }
@@ -300,7 +206,6 @@ fun AddLessonDialog(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Четность недели
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,

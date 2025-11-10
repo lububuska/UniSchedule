@@ -157,6 +157,23 @@ class UserDatabaseHelper(context: Context) : SQLiteOpenHelper(
         return id
     }
 
+    fun updateLesson(lesson: Lesson): Int {
+        val db = writableDatabase
+        val cv = ContentValues().apply {
+            put(COL_NAME, lesson.name)
+            put(COL_START, lesson.startTime)
+            put(COL_END, lesson.endTime)
+            put(COL_TEACHER, lesson.teacher)
+            put(COL_CLASSROOM, lesson.classroom)
+            put(COL_WEEKDAY, lesson.weekday)
+            put(COL_IS_EVEN, if (lesson.isEvenWeek) 1 else 0)
+            put(COL_USER_ID, lesson.userId)
+        }
+        val result = db.update(TABLE_LESSONS, cv, "$COL_LESSON_ID = ?", arrayOf(lesson.id.toString()))
+        db.close()
+        return result
+    }
+
     fun getLessonsForDay(weekday: Int, isEvenWeek: Boolean, userId: String): List<Lesson> {
         val db = readableDatabase
         val cursor = db.query(

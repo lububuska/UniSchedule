@@ -1,5 +1,7 @@
 package com.example.unischedule.ui.screens
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.unischedule.R
 import com.example.unischedule.data.UserDatabaseHelper
 import com.example.unischedule.data.Lesson
+import com.example.unischedule.ui.components.EditLessonDialog
 import com.example.unischedule.utils.DateUtils
 import java.time.LocalDate
 import java.time.temporal.WeekFields
@@ -27,6 +30,8 @@ fun DayLessonsScreen(
 ) {
     val context = LocalContext.current
     val db = remember { UserDatabaseHelper(context) }
+    var lessons by remember { mutableStateOf<List<Lesson>>(emptyList()) }
+    var lessonToEdit by remember { mutableStateOf<Lesson?>(null) }
 
     val selectedDate = remember(dateString) {
         if (dateString != null) LocalDate.parse(dateString) else LocalDate.now()
@@ -38,11 +43,16 @@ fun DayLessonsScreen(
 
     val prefs = context.getSharedPreferences("user_prefs", android.content.Context.MODE_PRIVATE)
     val userId = prefs.getString("user_id", null)
+    val currentLanguage = prefs.getString("language", "ru") ?: "ru"
 
-    val lessons = if (userId != null) {
-        db.getLessonsForDay(weekday, isEvenWeek, userId)
-    } else {
-        emptyList()
+    fun loadLessons() {
+        if (userId != null) {
+            lessons = db.getLessonsForDay(weekday, isEvenWeek, userId)
+        }
+    }
+
+    LaunchedEffect(key1 = refreshTrigger, key2 = userId, key3 = dateString) {
+        loadLessons()
     }
 
     val dayName = DateUtils.getLocalizedDayName(selectedDate)
@@ -82,7 +92,12 @@ fun DayLessonsScreen(
             LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 items(lessons) { lesson ->
                     Card(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) { lessonToEdit = lesson },
                         shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary)
                     ) {
@@ -114,5 +129,17 @@ fun DayLessonsScreen(
                 }
             }
         }
+    }
+
+    lessonToEdit?.let { lesson ->
+        EditLessonDialog(
+            lesson = lesson,
+            currentLanguage = currentLanguage,
+            onDismiss = { lessonToEdit = null },
+            onLessonUpdated = {
+                loadLessons()
+                lessonToEdit = null
+            }
+        )
     }
 }
