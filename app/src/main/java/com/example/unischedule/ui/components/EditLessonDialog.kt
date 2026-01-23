@@ -159,8 +159,7 @@ fun EditLessonDialog(
         R.string.day_wednesday to 3,
         R.string.day_thursday to 4,
         R.string.day_friday to 5,
-        R.string.day_saturday to 6,
-        R.string.day_sunday to 7
+        R.string.day_saturday to 6
     )
 
     val localizedDaysOfWeek = remember(currentLanguage) {

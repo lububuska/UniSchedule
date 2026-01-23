@@ -19,6 +19,7 @@
     <string name="error_user_exists">Пользователь с таким логином уже существует</string>
     <string name="settings">Настройки</string>
     <string name="dark_theme">Тёмная тема</string>
+    <string name="auto_theme">Авто тема (датчик света)</string>
     <string name="language">Английский язык</string>
     <string name="logout">Выйти из аккаунта</string>
     <string name="lesson_name">Название пары</string>

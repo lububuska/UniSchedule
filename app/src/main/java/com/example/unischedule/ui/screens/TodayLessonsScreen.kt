@@ -44,7 +44,12 @@ fun TodayLessonsScreen(
 
     fun loadLessons() {
         if (userId != null) {
-            lessons = db.getLessonsForDay(weekday, isEvenWeek, userId)
+            val month = today.monthValue
+            lessons = if (month in 6..8) {
+                emptyList()
+            } else {
+                db.getLessonsForDay(weekday, isEvenWeek, userId)
+            }
         }
     }
 

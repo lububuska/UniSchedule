@@ -20,6 +20,7 @@
     <string name="error_user_exists">A user with this login already exists</string>
     <string name="settings">Settings</string>
     <string name="dark_theme">Dark theme</string>
+    <string name="auto_theme">Auto theme (light sensor)</string>
     <string name="language">Russian language</string>
     <string name="logout">Log out</string>
     <string name="lesson_name">Name of the subject</string>

@@ -42,6 +42,8 @@ fun SettingsScreen(
     settings: SettingsManager,
     isDarkTheme: Boolean,
     onThemeChange: (Boolean) -> Unit,
+    isAutoTheme: Boolean,
+    onAutoThemeChange: (Boolean) -> Unit,
     currentLanguage: String,
     onLanguageChange: (String) -> Unit
 ) {
@@ -49,7 +51,12 @@ fun SettingsScreen(
     val sessionManager = remember { SessionManager(context) }
 
     var darkTheme by remember { mutableStateOf(isDarkTheme) }
+    var autoTheme by remember { mutableStateOf(isAutoTheme) }
     var lang by remember { mutableStateOf(currentLanguage) }
+
+    LaunchedEffect(isDarkTheme) {
+        darkTheme = isDarkTheme
+    }
 
     Column(
         modifier = Modifier
@@ -84,6 +91,7 @@ fun SettingsScreen(
                     darkTheme = it
                     onThemeChange(it)
                 },
+                enabled = !autoTheme,
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.tertiary,
                     uncheckedThumbColor = MaterialTheme.colorScheme.tertiary,
@@ -93,7 +101,35 @@ fun SettingsScreen(
                     uncheckedBorderColor = MaterialTheme.colorScheme.tertiary
                 )
             )
+        }
 
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            LocalizedText(
+                stringResId = R.string.auto_theme,
+                currentLanguage = currentLanguage,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = MaterialTheme.colorScheme.onSecondary
+                )
+            )
+            Switch(
+                checked = autoTheme,
+                onCheckedChange = {
+                    autoTheme = it
+                    onAutoThemeChange(it)
+                },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.tertiary,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.tertiary,
+                    checkedTrackColor = MaterialTheme.colorScheme.onTertiary,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.onTertiary,
+                    checkedBorderColor = MaterialTheme.colorScheme.tertiary,
+                    uncheckedBorderColor = MaterialTheme.colorScheme.tertiary
+                )
+            )
         }
 
         Row(

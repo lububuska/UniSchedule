@@ -25,6 +25,8 @@ fun MainNavigation(
     settings: SettingsManager,
     isDarkTheme: Boolean,
     onThemeChange: (Boolean) -> Unit,
+    isAutoTheme: Boolean,
+    onAutoThemeChange: (Boolean) -> Unit,
     currentLanguage: String,
     onLanguageChange: (String) -> Unit
 ) {
@@ -64,6 +66,8 @@ fun MainNavigation(
                     settings = settings,
                     isDarkTheme = isDarkTheme,
                     onThemeChange = onThemeChange,
+                    isAutoTheme = isAutoTheme,
+                    onAutoThemeChange = onAutoThemeChange,
                     currentLanguage = currentLanguage,
                     onLanguageChange = onLanguageChange
                 )
