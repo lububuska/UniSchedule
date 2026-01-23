@@ -49,7 +49,7 @@ fun MainNavigation(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "calendar",
+            startDestination = "today",
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("calendar") { CalendarScreen(navController, currentLang = currentLanguage) }
